@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "../../client/build")));
 
 // API endpoint example
 app.get("/api", (req, res) => {
@@ -18,7 +18,7 @@ app.get("/api", (req, res) => {
 
 // Handle any other routes (i.e., serve the React app)
 app.get("/", (req, res) => {
-	res.sendFile(path.join(__dirname, "client/build", "index.html"));
+	res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
 
 // Start the server
