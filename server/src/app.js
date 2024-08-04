@@ -9,11 +9,11 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
 	res.send("API is running...");
-	// res.sendFile(path.join(__dirname, "../../client/build/index.html"), function (err) {
-	// 	if (err) {
-	// 		res.status(500).send(err);
-	// 	}
-	// });
+	res.sendFile(path.join(__dirname, "../../client/build/index.html"), function (err) {
+		if (err) {
+			res.status(500).send(err);
+		}
+	});
 });
 
 // Start the server
