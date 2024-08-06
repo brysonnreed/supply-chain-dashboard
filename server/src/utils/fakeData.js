@@ -9,7 +9,7 @@ const pool = new Pool({
 	},
 });
 
-const createFakeCustomers = async (count = 20) => {
+const createFakeCustomers = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		for (let i = 0; i < count; i++) {
@@ -17,10 +17,11 @@ const createFakeCustomers = async (count = 20) => {
 			const email = faker.internet.email();
 			const address = faker.address.streetAddress();
 			const phone_number = faker.phone.number("##########");
+			const created_at = faker.date.past(1);
 
 			await client.query(
-				`INSERT INTO customers (name, email, address, phone_number) VALUES ($1, $2, $3, $4)`,
-				[name, email, address, phone_number]
+				`INSERT INTO customers (name, email, address, phone_number, created_at) VALUES ($1, $2, $3, $4, $5)`,
+				[name, email, address, phone_number, created_at]
 			);
 		}
 		console.log(`Inserted ${count} fake customers!`);
@@ -31,17 +32,18 @@ const createFakeCustomers = async (count = 20) => {
 	}
 };
 
-const createFakeSuppliers = async (count = 20) => {
+const createFakeSuppliers = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		for (let i = 0; i < count; i++) {
 			const name = faker.company.name();
 			const contact_info = faker.phone.number("##########");
+			const created_at = faker.date.past(1);
 
-			await client.query(`INSERT INTO suppliers (name, contact_info) VALUES ($1, $2)`, [
-				name,
-				contact_info,
-			]);
+			await client.query(
+				`INSERT INTO suppliers (name, contact_info, created_at) VALUES ($1, $2, $3)`,
+				[name, contact_info, created_at]
+			);
 		}
 		console.log(`Inserted ${count} fake suppliers!`);
 	} catch (err) {
@@ -51,18 +53,19 @@ const createFakeSuppliers = async (count = 20) => {
 	}
 };
 
-const createFakeProducts = async (count = 20) => {
+const createFakeProducts = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		for (let i = 0; i < count; i++) {
 			const name = faker.commerce.productName();
 			const description = faker.commerce.productDescription();
 			const price = faker.commerce.price();
-			const stock_quantity = faker.datatype.number({ min: 1, max: 100 });
+			const stock_quantity = faker.datatype.number({ min: 1, max: 200 });
+			const created_at = faker.date.past(1);
 
 			await client.query(
-				`INSERT INTO products (name, description, price, stock_quantity) VALUES ($1, $2, $3, $4)`,
-				[name, description, price, stock_quantity]
+				`INSERT INTO products (name, description, price, stock_quantity, created_at) VALUES ($1, $2, $3, $4, $5)`,
+				[name, description, price, stock_quantity, created_at]
 			);
 		}
 		console.log(`Inserted ${count} fake products!`);
@@ -73,18 +76,19 @@ const createFakeProducts = async (count = 20) => {
 	}
 };
 
-const createFakeInventory = async (count = 20) => {
+const createFakeInventory = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		for (let i = 0; i < count; i++) {
-			const product_id = faker.datatype.number({ min: 1, max: 20 });
-			const supplier_id = faker.datatype.number({ min: 1, max: 20 });
+			const product_id = faker.datatype.number({ min: 1, max: 40 });
+			const supplier_id = faker.datatype.number({ min: 1, max: 40 });
 			const quantity = faker.datatype.number({ min: 1, max: 100 });
 			const location = faker.address.city();
+			const updated_at = faker.date.past(1);
 
 			await client.query(
-				`INSERT INTO inventory (product_id, supplier_id, quantity, location) VALUES ($1, $2, $3, $4)`,
-				[product_id, supplier_id, quantity, location]
+				`INSERT INTO inventory (product_id, supplier_id, quantity, location, updated_at) VALUES ($1, $2, $3, $4, $5)`,
+				[product_id, supplier_id, quantity, location, updated_at]
 			);
 		}
 		console.log(`Inserted ${count} fake inventory records!`);
@@ -95,19 +99,20 @@ const createFakeInventory = async (count = 20) => {
 	}
 };
 
-const createFakeOrders = async (count = 20) => {
+const createFakeOrders = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		for (let i = 0; i < count; i++) {
-			const product_id = faker.datatype.number({ min: 1, max: 20 });
-			const customer_id = faker.datatype.number({ min: 1, max: 20 });
+			const product_id = faker.datatype.number({ min: 1, max: 40 });
+			const customer_id = faker.datatype.number({ min: 1, max: 40 });
 			const shipment_id = null; // Placeholder until shipment is created
 			const quantity = faker.datatype.number({ min: 1, max: 10 });
 			const status = faker.helpers.arrayElement(["pending", "shipped", "delivered"]);
+			const order_date = faker.date.recent({ days: 30 });
 
 			await client.query(
-				`INSERT INTO orders (product_id, customer_id, shipment_id, quantity, status) VALUES ($1, $2, $3, $4, $5)`,
-				[product_id, customer_id, shipment_id, quantity, status]
+				`INSERT INTO orders (product_id, customer_id, shipment_id, quantity, status, order_date) VALUES ($1, $2, $3, $4, $5, $6)`,
+				[product_id, customer_id, shipment_id, quantity, status, order_date]
 			);
 		}
 		console.log(`Inserted ${count} fake orders!`);
@@ -118,7 +123,7 @@ const createFakeOrders = async (count = 20) => {
 	}
 };
 
-const createFakeShipments = async (count = 20) => {
+const createFakeShipments = async (count = 40) => {
 	const client = await pool.connect();
 	try {
 		// Fetch existing order IDs and their associated product IDs
@@ -142,16 +147,26 @@ const createFakeShipments = async (count = 20) => {
 			const order = faker.helpers.arrayElement(orders);
 			const order_id = order.id;
 			const product_id = order.product_id; // Fetch the associated product_id from the order
-			const quantity = faker.datatype.number({ min: 1, max: 10 });
-			const shipment_date = faker.date.recent();
-			const estimated_arrival = faker.date.soon();
+			const quantity = faker.datatype.number({ min: 1, max: 50 });
+			const shipment_date = faker.date.recent({ days: 30 });
+			const estimated_arrival = faker.date.soon({ days: 30 });
 			const status = faker.helpers.arrayElement(["in transit", "delivered", "pending"]);
 			const destination = faker.address.city();
+			const created_at = faker.date.recent({ days: 30 });
 
 			// Insert shipment record with the retrieved product_id
 			const shipmentResult = await client.query(
-				`INSERT INTO shipments (product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-				[product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination]
+				`INSERT INTO shipments (product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination, created_At) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+				[
+					product_id,
+					order_id,
+					quantity,
+					shipment_date,
+					estimated_arrival,
+					status,
+					destination,
+					created_at,
+				]
 			);
 			const shipment_id = shipmentResult.rows[0].id;
 

@@ -3,12 +3,24 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"@emotion/react": "^11.13.0",
+		"@emotion/styled": "^11.13.0",
+		"@mui/icons-material": "^5.16.6",
+		"@mui/material": "^5.16.6",
+		"@mui/x-data-grid": "^7.12.0",
+		"@nivo/bar": "^0.87.0",
+		"@nivo/core": "^0.87.0",
+		"@nivo/geo": "^0.87.0",
+		"@nivo/line": "^0.87.0",
+		"@nivo/pie": "^0.87.0",
 		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^1.7.3",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-pro-sidebar": "^0.7.1",
+		"react-router-dom": "^6.26.0",
 		"react-scripts": "5.0.1",
 		"web-vitals": "^2.1.4"
 	},
@@ -16,7 +28,8 @@
 		"start-client": "react-scripts start",
 		"build": "react-scripts build && (cd ../server && npm install)",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"start": "react-scripts start --port 5000"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -37,6 +50,9 @@
 		]
 	},
 	"devDependencies": {
-		"tailwindcss": "^3.4.7"
+		"tailwindcss": "^3.4.7",
+		"webpack": "^5.93.0",
+		"webpack-cli": "^5.1.4",
+		"webpack-dev-server": "^5.0.4"
 	}
 }

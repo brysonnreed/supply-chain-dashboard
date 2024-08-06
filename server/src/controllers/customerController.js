@@ -2,7 +2,7 @@ const pool = require("../db");
 
 const getAllCustomers = async (req, res) => {
 	try {
-		const result = await query.pool("SELECT * FROM customers");
+		const result = await pool.query("SELECT * FROM customers");
 		res.status(200).json(result.rows);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
@@ -57,7 +57,7 @@ const deleteCustomer = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		await pool.query("DELETE FROM customers WHERE id = $1"), [id];
+		await pool.query("DELETE FROM customers WHERE id = $1", [id]);
 		res.status(200).json({ message: "Customer deleted successfully!" });
 	} catch (err) {
 		res.status(500).json({ error: err.message });

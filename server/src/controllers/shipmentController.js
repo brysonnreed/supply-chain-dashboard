@@ -30,7 +30,7 @@ const createShipment = async (req, res) => {
 
 	try {
 		await pool.query(
-			"INSERT INTO shipments (product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination) VALUES ($1, $2, $3, $4, $5, $6)",
+			"INSERT INTO shipments (product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination) VALUES ($1, $2, $3, $4, $5, $6, $7)",
 			[product_id, order_id, quantity, shipment_date, estimated_arrival, status, destination]
 		);
 		res.status(201).json({ message: "Shipment created succesfully!" });

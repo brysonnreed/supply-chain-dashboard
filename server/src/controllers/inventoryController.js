@@ -19,12 +19,12 @@ const getInventoryById = async (req, res) => {
 };
 
 const createInventory = async (req, res) => {
-	const { prduct_id, supplier_id, quantity } = req.body;
+	const { product_id, supplier_id, quantity, location } = req.body;
 
 	try {
 		await pool.query(
-			"INSERT INTO inventory (product_id, supplier_id, quantity) VALUES ($1, $2, $3)",
-			[prduct_id, supplier_id, quantity]
+			"INSERT INTO inventory (product_id, supplier_id, quantity, location) VALUES ($1, $2, $3, $4)",
+			[product_id, supplier_id, quantity, location]
 		);
 		res.status(201).json({ message: "Inventory created successfully!" });
 	} catch (err) {
@@ -33,18 +33,16 @@ const createInventory = async (req, res) => {
 };
 
 const updateInventory = async (req, res) => {
-	const { product_id, supplier_id, quantity } = req.body;
+	const { id } = req.params;
+	const { product_id, supplier_id, quantity, location } = req.body;
 
 	try {
 		await pool.query(
-			"UPDATE inventory SET quantity = $1, updated_at = NOW() WHERE product_id = $2",
-			[quantity, product_id, supplier_id]
+			"UPDATE inventory SET product_id = $1, supplier_id = $2, quantity = $3, location = $4 WHERE id = $5",
+			[product_id, supplier_id, quantity, location, id]
 		);
-		if (result.rows.length > 0) {
-			res.status(200).json(result.rows[0]);
-		} else {
-			res.status(404).json({ message: "Inventory item not found" });
-		}
+
+		res.status(200).json("Inventory updated successfully!");
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
