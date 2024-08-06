@@ -1,7 +1,8 @@
 import { getOrders, createOrder, updateOrder, deleteOrder } from "../../api/orders";
 import { tokens } from "../../styles/theme";
 import { Box, useTheme } from "@mui/material";
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GRID_STRING_COL_DEF } from "@mui/x-data-grid";
+import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Header from "../../components/Header";
@@ -15,6 +16,7 @@ import { getCustomerById } from "../../api/customers";
 import { getShipmentById } from "../../api/shipments";
 import MoreInfoCell from "../../components/MoreInfoCell";
 import ModalCreateUpdate from "../../components/Modal/ModalCreateUpdate";
+import dayjs from "dayjs";
 
 const OrdersPage = () => {
 	const theme = useTheme();
@@ -45,6 +47,57 @@ const OrdersPage = () => {
 
 	const handleCellClick = (api, id) => async () => {
 		await handleGetItemById(id, api)(); // Call handleGetItemById with appropriate API function
+	};
+
+	// Preprocess data to calculate the number of orders for each day in the last week
+	const preprocessOrderData = (orders) => {
+		const now = dayjs();
+		const thirtyDaysAgo = now.subtract(7, "day");
+
+		// Initialize an array for the last 30 days
+		const days = Array.from({ length: 7 }, (_, i) =>
+			now.subtract(i, "day").format("YYYY-MM-DD")
+		).reverse();
+		const orderCounts = days.reduce((acc, day) => ({ ...acc, [day]: 0 }), {});
+
+		// Count orders for each day
+		orders.forEach((order) => {
+			const createdAt = dayjs(order.created_at).format("YYYY-MM-DD");
+			if (dayjs(order.created_at).isAfter(thirtyDaysAgo)) {
+				orderCounts[createdAt] = (orderCounts[createdAt] || 0) + 1;
+			}
+		});
+
+		// Convert to array of values for the sparkline
+		return days.map((day) => orderCounts[day] || 0);
+	};
+
+	// Convert rows data to sparkline data
+	const sparklineData = preprocessOrderData(rows);
+
+	function GridSparklineCell(props) {
+		if (props.value == null) {
+			return null;
+		}
+
+		return (
+			<SparkLineChart
+				data={props.value}
+				width={props.colDef.computedWidth}
+				plotType={props.plotType}
+			/>
+		);
+	}
+
+	const sparklineColumnType = {
+		...GRID_STRING_COL_DEF,
+		type: "custom",
+		resizable: false,
+		filterable: false,
+		sortable: false,
+		editable: false,
+		groupable: false,
+		renderCell: (params) => <GridSparklineCell {...params} />,
 	};
 
 	const statusStyles = {
@@ -110,6 +163,14 @@ const OrdersPage = () => {
 				return formatDate(order_date);
 			},
 		},
+		{
+			field: "ordersOverLastWeek",
+			headerName: "Orders Over Last Week",
+			...sparklineColumnType,
+			width: 200,
+			valueGetter: () => sparklineData,
+		},
+
 		{
 			field: "status",
 			headerName: "Status",
