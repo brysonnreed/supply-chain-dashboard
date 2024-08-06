@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
@@ -36,12 +36,12 @@ const DataGridContainer = ({
 	};
 
 	// Set the initial sort model to sort by 'id' in ascending order
-	const sortModel = [
+	const [sortModel, setSortModel] = useState([
 		{
 			field: "id",
 			sort: "asc",
 		},
-	];
+	]);
 
 	if (loading) {
 		return (
@@ -106,6 +106,7 @@ const DataGridContainer = ({
 						toolbar: { setRows, setRowModesModel, rows },
 					}}
 					sortModel={sortModel}
+					onSortModelChange={(model) => setSortModel(model)}
 				/>
 			</Box>
 		</>
