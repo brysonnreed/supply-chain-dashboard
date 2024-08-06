@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000/api/customers";
+const API_BASE_URL = "https://supply-chain-dashboard-3e5637c94499.herokuapp.com/api/customers";
 
 export const getCustomers = async () => {
 	try {
