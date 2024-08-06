@@ -34,28 +34,17 @@ Utilizing MUI and Nivo, the dashboard presents various graphs and charts to disp
 **_Implementation Details_**
 React Router DOM is used to handle routing within the application, ensuring smooth navigation between various sections. Each route is connected to a specific CRUD interface, allowing users to manage different types of data effectively.
 
-### 🛠️ Docker Integration
-
-- **Dockerized Setup**: The application is fully containerized with Docker, facilitating consistent development, testing, and production environments.
-- **Deployment**: Docker ensures seamless deployment by using containerized services for both frontend and backend. The `Dockerfile` and `docker-compose.yml` are configured to manage the application’s build and runtime environments.
-
-**_Implementation Details_**
-The project includes Docker configurations for both the frontend and backend components. The Docker setup simplifies deployment and scaling, allowing the application to run consistently across different environments. The Docker containers are orchestrated using Docker Compose, which streamlines the management of multi-container applications.
-
 ## 🎨 Technologies Used
 
 - **Frontend**: React, MUI, Nivo, Axios, React Router DOM, React-Pro Sidebar
 - **Backend**: Express, PostgreSQL, CORS, dotenv
 - **Hosting**: Heroku
 - **Testing**: pgAdmin 4, Postman
-- **Containerization**: Docker, Docker Compose
 
 ## 📁 Project Structure
 
 - **`client/`**: Contains the React application with all UI components and frontend logic.
 - **`server/`**: Contains the backend code including routes, controllers, and database interactions.
-- **`Dockerfile`**: Configuration for building Docker images for both frontend and backend.
-- **`docker-compose.yml`**: Configuration for managing multi-container Docker applications.
 
 ## 🚀 Deployment
 
